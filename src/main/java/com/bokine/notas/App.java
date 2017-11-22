@@ -2,23 +2,19 @@ package com.bokine.notas;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.swing.text.StyledEditorKit.ForegroundAction;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.bokine.DAO.Firebird;
-import com.bokine.config.Config;
 import com.bokine.modelo.Nota;
-import com.fincatto.nfe310.classes.NFUnidadeFederativa;
-import com.fincatto.nfe310.classes.statusservico.consulta.NFStatusServicoConsultaRetorno;
-import com.fincatto.nfe310.webservices.WSFacade;
 
 import br.com.samuelweb.certificado.Certificado;
 import br.com.samuelweb.nfe.ConfiguracoesIniciaisNfe;
@@ -46,6 +42,9 @@ public class App
 	public static List<Nota> NotasNaoEncontradas = new ArrayList<Nota>();
 	public static Set<Nota> NotasParaTriar = new HashSet<Nota>();
 	public static  Map<String, Nota> notasFirebird = new HashMap<String, Nota>();
+	
+	public static Formatador formatador = new Formatador() {
+	};
 	
 	private static final Logger logger = LogManager.getLogger(App.class.getName());
 
@@ -105,9 +104,7 @@ public class App
 			System.out.println("Erro ao buscar elemento: "+e);
 		}
 		 
-		 
 		logger.debug("### RESULTADO ### ");
-		//logger.debug(NotasAnalisar);
 		maiorNota(NotasParaTriar);
 		triar(notasFirebird,maiorNumero);
 //		for (Nota nota : NotasParaTriar) {
@@ -115,30 +112,21 @@ public class App
 //		}
 		NotasNaoEncontradas.forEach(n->logger.debug(nota.getNota()));
     }
-
-	private static void triar(Map<String,Nota> notas, int maiorNota) {
-		boolean existe = false;
-		for (int i = 0; i <= maiorNota; i++) {
-			//System.out.printf("\nAnalisando... %d/%d",i,maiorNota);
-				 for (String key : notas.keySet()) {
-					 existe = false;
-	                 Nota nota = notas.get(key);
-	                 if(Integer.parseInt(nota.getNota())==i){
-	 					existe = true;
-	 					break;
-	                 }
-				 }
-			if(existe==false){
-				//System.out.println("Nao encontrou a nota:"+i);
-				NotasNaoEncontradas.add(new Nota(Integer.toString(i), "", "", "", ""));
-			}
-			
-		}
-		
-	}
 	
-	private static void triar2(Map<String,Nota> notas, int maiorNota) {
-		notas.keySet().stream().forEach(); 
+	private static void triar(Map<String,Nota> notas, int maiorNota) {
+		//notas.keySet().stream().forEach(); 
+		
+		Collection<Integer> clients = new ArrayList<>();
+	 	for (int i = 0; i <= maiorNota; i++) {
+			clients.add(i);
+		}
+	 	
+		 Set<String> acceptableNames = notas.entrySet().stream().map(u->u.getValue().getNota()).collect(Collectors.toSet()); 
+		 	
+			List<Integer> cli = clients .stream().filter(c -> !acceptableNames.contains(c.toString()))
+		 				.collect(Collectors.toList());
+
+			Formatador.imprimir(cli);
 		
 	}
 	
