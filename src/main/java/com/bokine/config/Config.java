@@ -1,6 +1,5 @@
 package com.bokine.config;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -26,25 +25,22 @@ public class Config implements NFeConfig{
 
 	@Override
 	public NFUnidadeFederativa getCUF() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public byte[] getCadeiaCertificados() throws IOException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getCadeiaCertificadosSenha() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public byte[] getCertificado() throws IOException {
-		 try (InputStream is = CertificadoUtils.class.getResource("C:/Uteis/certificados digitais 2017/2017/NM_FILIAL.pfx").openStream()) {
+		 try (InputStream is = CertificadoUtils.class.getResource("/home/saturno/Java-Projects/uteis/Certificados-2017/VERTICAL_COMERCIO.pfx").openStream()) {
 				return IOUtils.toByteArray(is);
 			}
 	}
@@ -57,13 +53,12 @@ public class Config implements NFeConfig{
 
 	@Override
 	public String getCodigoSegurancaContribuinte() {
-		// TODO Auto-generated method stub
-		return "d5d209f1439b9e45";
+		return "e522b5582e72f707";
 	}
 
 	@Override
 	public Integer getCodigoSegurancaContribuinteID() {
-		return 000002;
+		return 000001;
 	}
 
 	@Override

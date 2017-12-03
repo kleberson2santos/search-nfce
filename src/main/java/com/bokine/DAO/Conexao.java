@@ -10,7 +10,7 @@ import java.sql.Statement;
 /**
  * @author BBAmbrozio
  *
- * Classe responsável pela conexão com o banco de dados Firebird 1.5
+ * Classe responsável pela conexão com o banco de dados Firebird 2.5
  *
  * Database: horas
  * User: sysdba
@@ -30,7 +30,8 @@ public class Conexao {
          Class.forName("org.firebirdsql.jdbc.FBDriver");
          con =
             DriverManager.getConnection(
-               "jdbc:firebirdsql:localhost/3050:C:\\sys\\base\\BKN00001",
+               //"jdbc:firebirdsql:localhost/3050:C:\\sys\\base\\BKN00001",
+            		"jdbc:firebirdsql:LOCALHOST:/home/saturno/Java-Projects/database/BKN00001.fdb",
                "SYSDBA",
                "masterkey");
          stm = con.createStatement();

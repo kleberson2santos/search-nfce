@@ -32,9 +32,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Administrator/Documents/Projeto-NFCe-Java/java-nfe-3.10.8.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Administrator/Documents/Projeto-NFCe-Java/jaybird-jdk16-2.2.13.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Administrator/Documents/Projeto-NFCe-Java/log4j-api-2.7.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Administrator/Documents/Projeto-NFCe-Java/log4j-core-2.7.jar"/>
+	<classpathentry kind="lib" path="/home/saturno/Java-Projects/nfce/src/main/resources/java-nfe-3.10.8.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

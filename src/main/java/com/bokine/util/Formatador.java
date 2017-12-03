@@ -1,14 +1,17 @@
-package com.bokine.notas;
+package com.bokine.util;
 
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.bokine.notas.App;
+
 public interface Formatador {
 	static final Logger logger = LogManager.getLogger(App.class.getName());
 
 	public static void imprimir(List<Integer> lista){
+		logger.debug("### RESULTADO ### ");
 		int proximo = lista.get(0)+1;
 		 int fim = lista.get(0);
 		 int inicio = lista.get(0);

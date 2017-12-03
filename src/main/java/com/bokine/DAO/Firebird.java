@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
 
-import com.bokine.notas.App;
-
 public class Firebird {
 
     private String host;
@@ -56,7 +54,7 @@ public class Firebird {
             isConnected = true;
         } catch( SQLException e ) {
             e.printStackTrace();
-            System.out.println("ERRAO FEIO:");
+            logger.info("ERRAO FEIO:");
             System.out.println(e.getMessage());
             isConnected = false;
         } catch ( ClassNotFoundException e ) {
