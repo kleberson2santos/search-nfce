@@ -1,5 +1,6 @@
 package com.bokine.util;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,9 +39,9 @@ public class Validador {
 				System.out.println("Data:" + retorno.getProtNFe().getInfProt().getDhRecbto());
 				nota.setStatus(retorno.getCStat());
 				nota.setMotivo(retorno.getXMotivo());
-				nota.setData(retorno.getProtNFe().getInfProt().getDhRecbto().toString());
-
-			
+				nota.setData(retorno.getProtNFe().getInfProt().getDhRecbto()
+						.toGregorianCalendar().getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+				
 			//Transforma O ProtNfe do Retorno em XML
 			//String xmlProtNfe = XmlUtil.objectToXml(retorno.getProtNFe());
 			//System.out.println(xmlProtNfe);

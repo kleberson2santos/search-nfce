@@ -1,4 +1,5 @@
 package com.bokine.modelo;
+import java.time.LocalDateTime;
 
 public class Nota {
 	
@@ -6,13 +7,13 @@ public class Nota {
 	private String IdNfe;
 	private String Status;
 	private String Motivo;
-	private String Data;
+	private LocalDateTime Data;
 	
 	public Nota(){
 		
 	}
 	
-	public Nota(String nota, String idNfe, String status,String motivo, String data) {
+	public Nota(String nota, String idNfe, String status,String motivo, LocalDateTime data) {
 		Nota = nota;
 		IdNfe = idNfe;
 		Status = status;
@@ -44,10 +45,10 @@ public class Nota {
 	public void setMotivo(String motivo) {
 		Motivo = motivo;
 	}
-	public String getData() {
+	public LocalDateTime getData() {
 		return Data;
 	}
-	public void setData(String data) {
+	public void setData(LocalDateTime data) {
 		Data = data;
 	}
 	

@@ -13,13 +13,19 @@ public class Configuracao{
 		// Certificado Arquivo, Parametros: -Caminho Certificado, - Senha
 		Certificado certificado = null;
 		try {
-			certificado = CertificadoUtil.certificadoPfx("/home/saturno/Java-Projects/uteis/Certificados-2017/VERTICAL_COMERCIO.p12", "123456");
+			certificado = CertificadoUtil.certificadoPfx(
+					//"/home/saturno/Java-Projects/uteis/Certificados-2017/VERTICAL_COMERCIO.p12", 
+					"/home/kleber/Documentos/Repositorios_Java/uteis/certificados/VERTICAL_COMERCIO.p12",
+					"123456");
 		} catch (NfeException e) {
 			System.out.println("Certificado nao encontrado, "+e.getCause());
 		}
 
-		return ConfiguracoesIniciaisNfe.iniciaConfiguracoes(Estados.AM , ConstantesUtil.AMBIENTE.PRODUCAO,
-				certificado, "/home/saturno/Java-Projects/uteis/Schemas/", ConstantesUtil.VERSAO.V3_10);
+		return ConfiguracoesIniciaisNfe.iniciaConfiguracoes(
+				Estados.AM , ConstantesUtil.AMBIENTE.PRODUCAO,certificado, 
+//				"/home/saturno/Java-Projects/uteis/Schemas/", 
+				"/home/kleber/Documentos/Repositorios_Java/uteis/Schemas/", 
+				ConstantesUtil.VERSAO.V3_10);
 	}
 
 }

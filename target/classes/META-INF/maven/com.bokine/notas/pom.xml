@@ -15,14 +15,16 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
 	</properties>
+	
+	<repositories>
+		<repository>
+			<name>Repositorio Autocom SnapShot</name>
+			<id>Snapshot</id>
+			<url>http://www.autocomsistemas.com.br:8081/nexus/content/repositories/autocom/</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
-		<dependency>
-			<groupId>com.github.wmixvideo</groupId>
-			<artifactId>nfe</artifactId>
-			<version>1.1.14</version>
-		</dependency>
-		
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
@@ -51,6 +53,12 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>2.7</version>
+		</dependency>
+		<!-- NFCe -->
+		<dependency>
+			<groupId>br.com.samuelweb</groupId>
+			<artifactId>java-nfe</artifactId>
+			<version>3.10.8</version>
 		</dependency>
 	</dependencies>
 </project>
