@@ -5,8 +5,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,14 +42,11 @@ public class JdbcDaoImpl {
         this.database = database;
     }
     
-    public Map<String, Nota> NfceFilial03() {
-    	Map<String, Nota> notasFirebird = new HashMap<String, Nota>();
-    	String sql ="select "
-    			+ "nf.nota,nf.idnfe,nf.modelo,nf.data from nf where nf.idrecibo is not null "
-    			+ "and nf.filial=5 "
-    			+ "and nf.modelo<>32 "
-    			+ "and nf.modelo=35 "
-    			+ "order by 1";
+    
+    public Collection<Nota> NfceSemProtocolo() {
+    	System.err.println("NFCE SEM PROTOCOLO");
+    	Set<Nota> notasFirebird = new HashSet<Nota>();
+    	String sql ="select nf.nota,nf.idnfe,nf.modelo,nf.data from nf where nf.idnfe is null and nf.filial=5 and nf.modelo<>32 and nf.modelo=35 order by 1";
          
     	 String portNumber = "3050";
          String url = "jdbc:firebirdsql:"+ this.host+"/" +portNumber + ":" +this.database;;
@@ -79,6 +78,7 @@ public class JdbcDaoImpl {
 				
 				try {
 					nota.setNota(rs.getString("NOTA")); 
+					//System.out.print(rs.getString("NOTA")+"-");
 				} catch (Exception e) {
 					nota.setNota("");
 					System.out.println("Erro ao capturar numero da nota");
@@ -96,12 +96,14 @@ public class JdbcDaoImpl {
 					nota.setData(null);
 					System.out.println("Erro ao capturar Data");
 				}
-				notasFirebird.put(nota.getNota(), nota);
+				notasFirebird.add(nota);
 				
 		 	}
 		} catch (Exception e) {
 			System.out.println("Erro ao buscar elemento: "+e);
 		}
+		 
+		//notasFirebird.forEach(System.out::println);
     	return notasFirebird;
     }
     
@@ -189,42 +191,6 @@ public class JdbcDaoImpl {
        
         return isConnected;
     }
-   
-    /**
-     * Método que estabelece a desconexão com o banco de dados
-     *
-     * @return True se conseguir desconectar, falso em caso contrário.
-     */
-    public boolean disconnect() {
-        boolean isConnected = false;
-       
-        String url;
-        String portNumber = "3050";
-        String userName   = this.user;
-        String passName   = this.pass;
-        url = "jdbc:firebirdsql:"+ this.host+"/" +portNumber + ":" +this.database;
-             
-        try {
-            Class.forName("org.firebirdsql.jdbc.FBDriver").newInstance();
-            this.c = DriverManager.getConnection(url,userName, passName);
-            this.c.close();
-            isConnected = true;
-        } catch( SQLException e ) {
-            System.out.println(e.getMessage());
-            isConnected = false;
-        } catch ( ClassNotFoundException e ) {
-            System.out.println(e.getMessage());
-            isConnected = false;
-        } catch ( InstantiationException e ) {
-            System.out.println(e.getMessage());
-            isConnected = false;
-        } catch ( IllegalAccessException e ) {
-            System.out.println(e.getMessage());
-            isConnected = false;
-        }
-       
-        return isConnected;
-    }
 
     /**
      * Esse método executa a query dada, e retorna um ResultSet
@@ -249,27 +215,5 @@ public class JdbcDaoImpl {
        
         return null;
     }
-   
-    /**
-     * Executa uma query como update, delete ou insert.
-     * Retorna o número de registros afetados quando falamos de um update ou delete
-     * ou retorna 1 quando o insert é bem sucedido. Em outros casos retorna -1
-     *
-     * @param query A query que se deseja executar
-     * @return 0 para um insert bem sucedido. -1 para erro
-     */
-    public int inserir( String query ) {
-        Statement st;
-        int result = -1;
-       
-        try {
-            st = this.c.createStatement();
-            result = st.executeUpdate(query);
-        } catch ( SQLException e ) {
-            e.printStackTrace();
-        }
-       
-        return result;
-    }
-    
+
 }

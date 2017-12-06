@@ -22,8 +22,8 @@ public interface Formatador {
 				fim=e;
 			}else{
 				if(e > proximo){
-					intervalo = intervalo.concat(String.valueOf(fim)).concat("]\n");
-					logger.debug(intervalo);
+					intervalo = intervalo.concat(String.valueOf(fim)).concat("]");
+					logger.debug(intervalo+" qtde:"+(proximo-1-inicio+1)+"\n");
 					intervalo = "";
 					fim=e;
 					inicio=e;
@@ -34,6 +34,6 @@ public interface Formatador {
 			}
 		}
 		intervalo = intervalo.concat(fim+"]");
-		 logger.debug(intervalo);
+		 logger.debug(intervalo+" qtde:"+(proximo-1-inicio+1));
 	}
 }

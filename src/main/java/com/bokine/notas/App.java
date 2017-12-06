@@ -8,8 +8,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TooManyListenersException;
 import java.util.stream.Collectors;
 
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,9 +35,12 @@ public class App
 	public static List<Nota> NotasAnalisar = new ArrayList<Nota>();
 	
 	public static Set<Nota> NotasParaTriar = new HashSet<Nota>();
-	public static  Map<String, Nota> notasFirebird = new HashMap<String, Nota>();
+	public static  Map<String, Nota> notasComProtocolo = new HashMap<String, Nota>();
+	public static  Map<String, Nota> notasSemRecibo = new HashMap<String, Nota>();
+	public static  Map<String, Nota> notasSemProtocolo = new HashMap<String, Nota>();
 	
 	public static Formatador formatador = new Formatador(){};
+	public static Comparador comparador = new Comparador();
 	public static ConfiguracoesIniciaisNfe config = Configuracao.iniciaConfigurações();
 	
 	 private static final Logger logger = 
@@ -55,9 +60,13 @@ public class App
 		Nota danfe = new Nota("135520", "13171003351649000145650000001355201000000013", "", "", LocalDateTime.now());
 		
 		Comparador comparator = new Comparador();
-		//validarNF(danfe);
-		notasFirebird = firebirdDao.NfceFilial03();
-		triar(notasFirebird, maiorNumero);
+		
+		logger.debug("NOTAS SEM PROTOCOLO NA BASE");
+		notasSemProtocolo = getMap(firebirdDao.NfceSemProtocolo());
+		List<Nota> notaReturn = notasSemProtocolo.values().stream().sorted(comparador).limit(10).collect(Collectors.toList());
+		imprimirRangerNotas(notaReturn);
+		
+		
 		/*notasFirebird.values().stream()
 		.sorted(comparator)
 		.forEach(nota->
@@ -79,22 +88,30 @@ public class App
 //		NotasNaoEncontradas.forEach(n->System.out.println(nota.getNota()));
     }
 	
-	private static void triar(Map<String,Nota> notas, Long maiorNota) {
-		//notas.keySet().stream().forEach(); 
+	private static void imprimirNotasNaoRegistradas(Map<String,Nota> notas, Long maiorNota) {
+		logger.debug("NOTAS NAO ENCONTRADAS NA BASE");
 		
-		Collection<Integer> idsDeNotas = new ArrayList<>();
-	 	for (int i = 0; i <= maiorNota; i++) {
-			idsDeNotas.add(i);
-		}
+		Collection<Integer> ranger = new ArrayList<>();
+		
+	 	for (int i = 0; i <= maiorNota; i++) {ranger.add(i);}
 	 	
-		Set<String> acceptableNames = notas.entrySet().stream().map(u->u.getValue().getNota()).collect(Collectors.toSet()); 
+		Set<String> idsStrings = notas.entrySet().stream().map(u->u.getValue().getNota()).collect(Collectors.toSet()); 
 		 	
-			List<Integer> cli = idsDeNotas .stream().filter(c -> !acceptableNames.contains(c.toString()))
+		List<Integer> idsInteger = ranger.stream().filter(id -> !idsStrings.contains(id.toString()))
 		 				.collect(Collectors.toList());
-			logger.debug("NOTAS NAO ENCONTRADAS NA BASE");
-			Formatador.imprimir(cli);
+		
+		Formatador.imprimir(idsInteger);
 		
 	}
+	
+	private static void imprimirRangerNotas(Map<String,Nota> notas) {
+	 	
+		List<Integer> idsInteger = notas.entrySet().stream().mapToInt(u->Integer.parseInt(u.getValue().getNota())).collect(ArrayList::new, ArrayList::add,ArrayList::addAll); 
+		
+		Formatador.imprimir(idsInteger);
+		
+	}
+	
 //	
 //	private static int maiorNota(Set<Nota> notasParaTriar){
 //		int maiorNumero = 0;
@@ -108,6 +125,14 @@ public class App
 //
 	private static void validarNF(Nota nota){
 		new Validador().validador(nota,config);
+	}
+	
+	private static Map<String, Nota> getMap(Collection<Nota> notas) {
+		return notas.stream().collect(
+                Collectors.toMap(Nota::getNota,n->{
+                	Nota nota = n;
+                	return nota;
+                }));
 	}
 	
 }

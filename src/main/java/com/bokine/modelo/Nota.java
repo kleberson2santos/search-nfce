@@ -56,11 +56,10 @@ public class Nota {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((IdNfe == null) ? 0 : IdNfe.hashCode());
 		result = prime * result + ((Nota == null) ? 0 : Nota.hashCode());
 		return result;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -70,11 +69,6 @@ public class Nota {
 		if (getClass() != obj.getClass())
 			return false;
 		Nota other = (Nota) obj;
-		if (IdNfe == null) {
-			if (other.IdNfe != null)
-				return false;
-		} else if (!IdNfe.equals(other.IdNfe))
-			return false;
 		if (Nota == null) {
 			if (other.Nota != null)
 				return false;

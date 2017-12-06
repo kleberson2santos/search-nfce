@@ -14,15 +14,5 @@ public class Comparador implements Comparator<Nota>{
 		p2=Integer.parseInt(o2.getNota());
 		return  p1.compareTo(p2);
 	}
-	
-	
-	
-	
-//	public class TitularComparator implements Comparator {
-//	    public int compare(Conta conta, Conta outraConta) {
-//	        return conta.getTitular().
-//	                compareTo(outraConta.getTitular());
-//	    }
-//	}
 
 }
