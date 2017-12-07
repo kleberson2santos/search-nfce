@@ -1,17 +1,20 @@
 package com.bokine.notas;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TooManyListenersException;
 import java.util.stream.Collectors;
 
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,6 +41,7 @@ public class App
 	public static  Map<String, Nota> notasComProtocolo = new HashMap<String, Nota>();
 	public static  Map<String, Nota> notasSemRecibo = new HashMap<String, Nota>();
 	public static  Map<String, Nota> notasSemProtocolo = new HashMap<String, Nota>();
+	public static  Map<String, Nota> todasNfce = new HashMap<String, Nota>();
 	
 	public static Formatador formatador = new Formatador(){};
 	public static Comparador comparador = new Comparador();
@@ -61,11 +65,23 @@ public class App
 		
 		Comparador comparator = new Comparador();
 		
-		logger.debug("NOTAS SEM PROTOCOLO NA BASE");
-		notasSemProtocolo = getMap(firebirdDao.NfceSemProtocolo());
-		List<Nota> notaReturn = notasSemProtocolo.values().stream().sorted(comparador).limit(10).collect(Collectors.toList());
-		imprimirRangerNotas(notaReturn);
+		//logger.debug("NOTAS COM PROTOCOLO NA BASE");
+		notasComProtocolo = firebirdDao.NfceComProtocolo();
+		//imprimirRangerNotas(notasComProtocolo);
 		
+		//logger.debug("NOTAS SEM PROTOCOLO NA BASE");
+		notasSemProtocolo = firebirdDao.NfceSemProtocolo();
+		//imprimirRangerNotas(notasSemProtocolo);
+		
+		//logger.debug("NOTAS SEM RECIBO NA BASE");
+		notasSemRecibo = firebirdDao.NfceSemRecibo();
+		//imprimirRangerNotas(notasSemRecibo);
+		
+		todasNfce = firebirdDao.todasNfce();
+		
+		unirListasParaImpressao(notasComProtocolo, notasSemProtocolo,notasSemRecibo);
+		logger.debug("NOTAS NAO ENCONTRADAS" );
+		imprimirNotasNaoRegistradas(todasNfce,maiorNumero);
 		
 		/*notasFirebird.values().stream()
 		.sorted(comparator)
@@ -88,6 +104,24 @@ public class App
 //		NotasNaoEncontradas.forEach(n->System.out.println(nota.getNota()));
     }
 	
+	private static void unirListasParaImpressao(Map<String, Nota> notasComProtocolo,
+		Map<String, Nota> notasSemProtocolo, Map<String,Nota> notasSemRecibo) {
+		Map<String, Nota> result = notasSemProtocolo.values().stream().filter(nota -> !notasComProtocolo.containsKey(nota.getNota()))
+ 				.collect(Collectors.toMap(Nota::getNota, n -> n, // key = name, value = websites
+						(oldValue, newValue) -> oldValue, // if same key, take the old key
+						LinkedHashMap::new));
+		
+		Map<String, Nota> result2 = notasSemRecibo.values().stream().filter(nota -> !notasComProtocolo.containsKey(nota.getNota()))
+ 				.collect(Collectors.toMap(Nota::getNota, n -> n, // key = name, value = websites
+						(oldValue, newValue) -> oldValue, // if same key, take the old key
+						LinkedHashMap::new));
+
+		logger.debug("NOTAS SEM PROTOCOLO");
+		result.putAll(result2);
+		imprimirRangerNotas(result);
+		
+	}
+
 	private static void imprimirNotasNaoRegistradas(Map<String,Nota> notas, Long maiorNota) {
 		logger.debug("NOTAS NAO ENCONTRADAS NA BASE");
 		
@@ -95,10 +129,10 @@ public class App
 		
 	 	for (int i = 0; i <= maiorNota; i++) {ranger.add(i);}
 	 	
-		Set<String> idsStrings = notas.entrySet().stream().map(u->u.getValue().getNota()).collect(Collectors.toSet()); 
+		Set<String> idsStrings = notas.entrySet().stream().map(u->u.getValue().getNota()).collect(toSet()); 
 		 	
 		List<Integer> idsInteger = ranger.stream().filter(id -> !idsStrings.contains(id.toString()))
-		 				.collect(Collectors.toList());
+		 				.collect(toList());
 		
 		Formatador.imprimir(idsInteger);
 		
@@ -128,11 +162,7 @@ public class App
 	}
 	
 	private static Map<String, Nota> getMap(Collection<Nota> notas) {
-		return notas.stream().collect(
-                Collectors.toMap(Nota::getNota,n->{
-                	Nota nota = n;
-                	return nota;
-                }));
+		return notas.stream().collect(toMap(Nota::getNota,n->n));
 	}
 	
 }
