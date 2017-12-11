@@ -1,10 +1,8 @@
 package com.bokine.notas;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,9 +19,10 @@ import org.apache.logging.log4j.Logger;
 import com.bokine.DAO.JdbcDaoImpl;
 import com.bokine.config.Configuracao;
 import com.bokine.modelo.Nota;
+import com.bokine.service.NotasJaInutilizadasL03;
+import com.bokine.service.NotasJaInutilizadasL04;
 import com.bokine.util.Comparador;
 import com.bokine.util.Formatador;
-import com.bokine.util.Validador;
 
 import br.com.samuelweb.nfe.ConfiguracoesIniciaisNfe;
 
@@ -35,13 +34,15 @@ public class App
 	private static String pass;
 	public static Long maiorNumero=0L;
 	
-	public static List<Nota> NotasAnalisar = new ArrayList<Nota>();
-	
 	public static Set<Nota> NotasParaTriar = new HashSet<Nota>();
 	public static  Map<String, Nota> notasComProtocolo = new HashMap<String, Nota>();
 	public static  Map<String, Nota> notasSemRecibo = new HashMap<String, Nota>();
 	public static  Map<String, Nota> notasSemProtocolo = new HashMap<String, Nota>();
 	public static  Map<String, Nota> todasNfce = new HashMap<String, Nota>();
+	public static List<Integer> notasJaInutilizadas = new ArrayList<Integer>();
+	public static List<Integer> notasNaoEncontradasNaBase = new ArrayList<Integer>();
+	
+	public static  Map<String, Nota> listaFinal = new HashMap<String, Nota>();
 	
 	public static Formatador formatador = new Formatador(){};
 	public static Comparador comparador = new Comparador();
@@ -61,108 +62,68 @@ public class App
         
         maiorNumero=firebirdDao.maiorNota();
 		
-		Nota danfe = new Nota("135520", "13171003351649000145650000001355201000000013", "", "", LocalDateTime.now());
-		
-		Comparador comparator = new Comparador();
-		
-		//logger.debug("NOTAS COM PROTOCOLO NA BASE");
+		//Nota danfe = new Nota("135520", "13171003351649000145650000001355201000000013", "", "", LocalDateTime.now());
+
+		notasJaInutilizadas = new NotasJaInutilizadasL04().getLista();
+
 		notasComProtocolo = firebirdDao.NfceComProtocolo();
-		//imprimirRangerNotas(notasComProtocolo);
 		
-		//logger.debug("NOTAS SEM PROTOCOLO NA BASE");
 		notasSemProtocolo = firebirdDao.NfceSemProtocolo();
-		//imprimirRangerNotas(notasSemProtocolo);
 		
-		//logger.debug("NOTAS SEM RECIBO NA BASE");
 		notasSemRecibo = firebirdDao.NfceSemRecibo();
-		//imprimirRangerNotas(notasSemRecibo);
 		
 		todasNfce = firebirdDao.todasNfce();
 		
-		unirListasParaImpressao(notasComProtocolo, notasSemProtocolo,notasSemRecibo);
-		logger.debug("NOTAS NAO ENCONTRADAS" );
-		imprimirNotasNaoRegistradas(todasNfce,maiorNumero);
+		logger.debug("NOTAS SEM SEM RECIBO");
+		imprimirRangerNotas(notasSemRecibo);
 		
-		/*notasFirebird.values().stream()
-		.sorted(comparator)
-		.forEach(nota->
-			logger.debug(
-					nota.getNota()+"\t"+
-					nota.getIdNfe()+"\t"+
-					nota.getMotivo()+"\t"+
-					nota.getStatus()+"\t"+
-					nota.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
-		*/
-//		Formatador.imprimir(notasFirebird.values().stream().mapToInt(x->Integer.parseInt(x.getNota()))
-//					.collect(ArrayList::new, ArrayList::add,ArrayList::addAll));
 		
-//		maiorNota(NotasParaTriar);
-		//triar(notasFirebird,maiorNumero);
-//		for (Nota nota : NotasParaTriar) {
-//			System.out.println("Nota:"+nota.getNota()+"|"+nota.getIdNfe());
-//		}
-//		NotasNaoEncontradas.forEach(n->System.out.println(nota.getNota()));
+		logger.debug("NOTAS SEM PROTOCOLO - JA INUTILIZADAS ");
+		listaFinal = removerLista(todasNfce,notasComProtocolo);
+		listaFinal = removerListaInteiros(listaFinal,notasJaInutilizadas);
+		imprimirRangerNotas(listaFinal);
+		
+		logger.debug("NOTAS NAO REGISTRADAS ");
+		notasNaoEncontradasNaBase = notasNaoRegistradas(todasNfce, maiorNumero);
+		notasNaoEncontradasNaBase = removerListaInteirosDeInteiros(notasNaoEncontradasNaBase, notasJaInutilizadas);
+		Formatador.imprimir(notasNaoEncontradasNaBase);
+		
     }
 	
-	private static void unirListasParaImpressao(Map<String, Nota> notasComProtocolo,
-		Map<String, Nota> notasSemProtocolo, Map<String,Nota> notasSemRecibo) {
-		Map<String, Nota> result = notasSemProtocolo.values().stream().filter(nota -> !notasComProtocolo.containsKey(nota.getNota()))
+	private static Map<String, Nota> removerLista(Map<String,Nota> notasaAplicar, Map<String, Nota> notasaRemover ) {
+			Map<String, Nota> result2 = notasaAplicar.values().stream().filter(nota -> !notasaRemover.containsKey(nota.getNota()))
+	 				.collect(Collectors.toMap(Nota::getNota, n -> n, // key = name, value = websites
+							(oldValue, newValue) -> oldValue, // if same key, take the old key
+							LinkedHashMap::new));
+			return result2;
+		}
+	
+	private static Map<String, Nota> removerListaInteiros(Map<String,Nota> notasaAplicar, List<Integer> notasaRemover ) {
+		Map<String, Nota> result2 = notasaAplicar.values().stream().filter(nota -> !notasaRemover.contains(Integer.parseInt(nota.getNota())))
  				.collect(Collectors.toMap(Nota::getNota, n -> n, // key = name, value = websites
 						(oldValue, newValue) -> oldValue, // if same key, take the old key
 						LinkedHashMap::new));
-		
-		Map<String, Nota> result2 = notasSemRecibo.values().stream().filter(nota -> !notasComProtocolo.containsKey(nota.getNota()))
- 				.collect(Collectors.toMap(Nota::getNota, n -> n, // key = name, value = websites
-						(oldValue, newValue) -> oldValue, // if same key, take the old key
-						LinkedHashMap::new));
-
-		logger.debug("NOTAS SEM PROTOCOLO");
-		result.putAll(result2);
-		imprimirRangerNotas(result);
-		
+		return result2;
 	}
-
-	private static void imprimirNotasNaoRegistradas(Map<String,Nota> notas, Long maiorNota) {
-		logger.debug("NOTAS NAO ENCONTRADAS NA BASE");
-		
+	
+	private static List<Integer> removerListaInteirosDeInteiros(List<Integer> notasaAplicar, List<Integer> notasaRemover ) {
+		List<Integer> result2 = notasaAplicar.stream().filter(i -> !notasaRemover.contains(i))
+ 				.collect(Collectors.toList());
+		return result2;
+	}
+	
+	private static  List<Integer> notasNaoRegistradas(Map<String,Nota> notas, Long maiorNota) {
 		Collection<Integer> ranger = new ArrayList<>();
-		
-	 	for (int i = 0; i <= maiorNota; i++) {ranger.add(i);}
-	 	
+	 	for (int i = 1; i <= maiorNota; i++) {ranger.add(i);}
 		Set<String> idsStrings = notas.entrySet().stream().map(u->u.getValue().getNota()).collect(toSet()); 
-		 	
 		List<Integer> idsInteger = ranger.stream().filter(id -> !idsStrings.contains(id.toString()))
 		 				.collect(toList());
-		
-		Formatador.imprimir(idsInteger);
-		
+		return idsInteger;
 	}
 	
 	private static void imprimirRangerNotas(Map<String,Nota> notas) {
-	 	
 		List<Integer> idsInteger = notas.entrySet().stream().mapToInt(u->Integer.parseInt(u.getValue().getNota())).collect(ArrayList::new, ArrayList::add,ArrayList::addAll); 
-		
 		Formatador.imprimir(idsInteger);
-		
-	}
-	
-//	
-//	private static int maiorNota(Set<Nota> notasParaTriar){
-//		int maiorNumero = 0;
-//		for(Nota nota : notasParaTriar){
-//			if(Integer.parseInt(nota.getNota())>maiorNumero){
-//				maiorNumero = Integer.parseInt(nota.getNota());
-//			}
-//		}
-//		return maiorNumero;
-//	}
-//
-	private static void validarNF(Nota nota){
-		new Validador().validador(nota,config);
-	}
-	
-	private static Map<String, Nota> getMap(Collection<Nota> notas) {
-		return notas.stream().collect(toMap(Nota::getNota,n->n));
 	}
 	
 }

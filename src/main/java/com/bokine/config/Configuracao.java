@@ -15,7 +15,8 @@ public class Configuracao{
 		try {
 			certificado = CertificadoUtil.certificadoPfx(
 					//"/home/saturno/Java-Projects/uteis/Certificados-2017/VERTICAL_COMERCIO.p12", 
-					"/home/kleber/Documentos/Repositorios_Java/uteis/certificados/VERTICAL_COMERCIO.p12",
+					//"/home/kleber/Documentos/Repositorios_Java/uteis/certificados/VERTICAL_COMERCIO.p12",
+					"/home/kleber/Documentos/Repositorios_Java/uteis/certificados/NM_FILIAL.p12",
 					"123456");
 		} catch (NfeException e) {
 			System.out.println("Certificado nao encontrado, "+e.getCause());
