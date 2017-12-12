@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,7 +21,6 @@ import com.bokine.DAO.JdbcDaoImpl;
 import com.bokine.config.Configuracao;
 import com.bokine.modelo.Nota;
 import com.bokine.service.NotasJaInutilizadasL03;
-import com.bokine.service.NotasJaInutilizadasL04;
 import com.bokine.util.Comparador;
 import com.bokine.util.Formatador;
 
@@ -64,7 +64,7 @@ public class App
 		
 		//Nota danfe = new Nota("135520", "13171003351649000145650000001355201000000013", "", "", LocalDateTime.now());
 
-		notasJaInutilizadas = new NotasJaInutilizadasL04().getLista();
+		notasJaInutilizadas = new NotasJaInutilizadasL03().getLista();
 
 		notasComProtocolo = firebirdDao.NfceComProtocolo();
 		
@@ -75,6 +75,7 @@ public class App
 		todasNfce = firebirdDao.todasNfce();
 		
 		logger.debug("NOTAS SEM SEM RECIBO");
+		notasSemRecibo = removerLista(notasSemRecibo,notasComProtocolo);
 		imprimirRangerNotas(notasSemRecibo);
 		
 		
@@ -122,8 +123,12 @@ public class App
 	}
 	
 	private static void imprimirRangerNotas(Map<String,Nota> notas) {
-		List<Integer> idsInteger = notas.entrySet().stream().mapToInt(u->Integer.parseInt(u.getValue().getNota())).collect(ArrayList::new, ArrayList::add,ArrayList::addAll); 
-		Formatador.imprimir(idsInteger);
+		if(!notas.isEmpty()) {
+			List<Integer> idsInteger = notas.entrySet().stream().mapToInt(u->Integer.parseInt(u.getValue().getNota())).collect(ArrayList::new, ArrayList::add,ArrayList::addAll); 
+			Formatador.imprimir(idsInteger);
+		}else {
+			Formatador.imprimir(Arrays.asList(0));
+		}
 	}
 	
 }

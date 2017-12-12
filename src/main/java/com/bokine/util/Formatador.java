@@ -11,7 +11,7 @@ public interface Formatador {
 	static final Logger logger = LogManager.getLogger(App.class.getName());
 
 	public static void imprimir(List<Integer> lista){
-		logger.debug("### RESULTADO ### ");
+		logger.debug("------- RESULTADO ------- ");
 		int proximo = lista.get(0)+1;
 		 int fim = lista.get(0);
 		 int inicio = lista.get(0);
