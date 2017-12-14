@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 import com.bokine.DAO.JdbcDaoImpl;
 import com.bokine.config.Configuracao;
 import com.bokine.modelo.Nota;
-import com.bokine.service.NotasJaInutilizadasL03;
+import com.bokine.service.NotasJaInutilizadasL01;
 import com.bokine.util.Comparador;
 import com.bokine.util.Formatador;
 
@@ -64,7 +64,7 @@ public class App
 		
 		//Nota danfe = new Nota("135520", "13171003351649000145650000001355201000000013", "", "", LocalDateTime.now());
 
-		notasJaInutilizadas = new NotasJaInutilizadasL03().getLista();
+		notasJaInutilizadas = new NotasJaInutilizadasL01().getLista();
 
 		notasComProtocolo = firebirdDao.NfceComProtocolo();
 		

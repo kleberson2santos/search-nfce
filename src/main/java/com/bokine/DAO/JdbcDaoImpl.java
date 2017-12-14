@@ -23,7 +23,7 @@ public class JdbcDaoImpl {
 	private String database;
 
 	public Connection c;
-	private String filial = "5";
+	private String filial = "2";
 
 	/**
 	 * Construtor da classe
@@ -45,7 +45,8 @@ public class JdbcDaoImpl {
 	}
 
 	public Map<String, Nota> NfceComProtocolo() {
-		/* Filial 00002 = id (3)
+		/* Filial 00001 = id (2)
+		 * Filial 00002 = id (3)
 		 * Filial 00003 = id (5)
 		 * Filial 00004 = id (7)
 		 * Filial 00005 = id (9)
@@ -53,8 +54,9 @@ public class JdbcDaoImpl {
 		 * */
 		
 		Set<Nota> notasList = new HashSet<Nota>();
-		String sql = "select nf.nota,nf.idnfe,nf.modelo,nf.data from nf "
-				+ "where nf.idnfe is not null and nf.filial="+filial+" and nf.modelo<>32 and nf.modelo=35 order by 1";
+		String sql = "select nf.nota,nf.idnfe,nf.modelo,nf.data from nf"
+				+ " where nf.idnfe is not null and nf.filial="+filial
+				+ " and nf.SERIE<>1 and nf.modelo<>32 and nf.modelo=35 order by 1";
 
 		String portNumber = "3050";
 		String url = "jdbc:firebirdsql:" + this.host + "/" + portNumber + ":" + this.database;
@@ -126,7 +128,8 @@ public class JdbcDaoImpl {
 	public Map<String, Nota> NfceSemProtocolo() {
 		Set<Nota> notasList = new HashSet<Nota>();
 		String sql = "select nf.nota,nf.idnfe,nf.modelo,nf.data from nf "
-				+ "where nf.idnfe is null and nf.filial="+filial+" and nf.modelo<>32 and nf.modelo=35 order by 1";
+				+ " where nf.idnfe is null and nf.filial="+filial
+				+ " and nf.SERIE<>1 and nf.modelo<>32 and nf.modelo=35 order by 1";
 
 		String portNumber = "3050";
 		String url = "jdbc:firebirdsql:" + this.host + "/" + portNumber + ":" + this.database;
@@ -197,8 +200,9 @@ public class JdbcDaoImpl {
 
 	public Map<String, Nota> NfceSemRecibo() {
 		Set<Nota> notasList = new HashSet<Nota>();
-		String sql = "select " + "nf.nota,nf.idnfe,nf.modelo,nf.data from nf where nf.idrecibo is null "
-				+ "and nf.filial="+filial+" and nf.modelo<>32 and nf.modelo=35 order by 1";
+		String sql = "select nf.nota,nf.idnfe,nf.modelo,nf.data from nf where nf.idrecibo is null "
+				+ " and nf.filial="+filial+ " and nf.SERIE<>1"
+				+ " and nf.modelo<>32 and nf.modelo=35 order by 1";
 
 		String portNumber = "3050";
 		String url = "jdbc:firebirdsql:" + this.host + "/" + portNumber + ":" + this.database;
@@ -267,7 +271,8 @@ public class JdbcDaoImpl {
 	}
 
 	public Long maiorNota() {
-		String sql = "select max(nf.nota) from nf where nf.filial="+filial+" and nf.modelo<>32 and nf.modelo=35 order by 1";
+		String sql = "select max(nf.nota) from nf where nf.filial="+filial
+				+" and nf.SERIE<>1 and nf.modelo<>32 and nf.modelo=35 order by 1";
 
 		String portNumber = "3050";
 		String url = "jdbc:firebirdsql:" + this.host + "/" + portNumber + ":" + this.database;
@@ -299,7 +304,6 @@ public class JdbcDaoImpl {
 				maxID = rs.getLong("MAX");
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return maxID;
@@ -372,7 +376,8 @@ public class JdbcDaoImpl {
 	public Map<String, Nota> todasNfce() {
 		Set<Nota> notasList = new HashSet<Nota>();
 		String sql = "select nf.nota,nf.idnfe,idrecibo,nf.modelo,nf.data from nf "
-				+ "where nf.filial="+filial+" and nf.modelo<>32 and nf.modelo=35 order by 1";
+				+ " where nf.filial="+filial+" and nf.SERIE<>1"
+				+ " and nf.modelo<>32 and nf.modelo=35 order by 1";
 
 		String portNumber = "3050";
 		String url = "jdbc:firebirdsql:" + this.host + "/" + portNumber + ":" + this.database;

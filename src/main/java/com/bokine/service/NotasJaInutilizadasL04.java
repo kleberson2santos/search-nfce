@@ -13,32 +13,27 @@ public class NotasJaInutilizadasL04 {
 	
 	public List<Integer> getLista(){
 		
-		notasJaInutilizadas.addAll(new CriadorDeLista(13397,13895).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(12897,13396).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(12397,12896).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(11897,12396).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(11397,11896).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(10897,11396).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(10397,10896).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(9897,10396).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(8897,9396).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(9397,9896).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(8397,8896).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(7897,8396).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(7397,7896).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(6897,7396).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(6397,6896).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(5897,6396).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(5397,5896).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(4397,4896).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(4897,5396).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(3896,4396).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(3131).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(1529,1533).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(1426,1527).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(832,1319).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(466).getLista());
-		notasJaInutilizadas.addAll(new CriadorDeLista(105).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(9865).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(9605).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(8894).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(1016).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(1018).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(616,617).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(588).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(85,86).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(17899).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(17658).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(17211).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(17053).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(17164,17165).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(17003).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(16985).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(16800).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(16923).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(16709).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(16500).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(16485).getLista());
+		notasJaInutilizadas.addAll(new CriadorDeLista(16425).getLista());
 		
 		Collections.sort(notasJaInutilizadas);
 		return this.notasJaInutilizadas;
